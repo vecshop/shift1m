@@ -4,6 +4,9 @@ class AuthService {
   constructor() {
     this.tokenKey = "shift1m_token";
     this.userKey = "shift1m_user";
+
+    // Define allowed image types
+    this.allowedImageTypes = ["image/jpeg", "image/png", "image/gif"];
   }
 
   // Pindahkan resizeImage ke dalam class sebagai method
