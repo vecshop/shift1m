@@ -1,0 +1,179 @@
+/* assets/style.css */
+:root {
+  --primary-blue: #6b85db;
+  --light-blue: #e6f2f7;
+  --dark-blue: #3a7ca5;
+  --success-green: #4caf50;
+  --warning-orange: #ff9800;
+  --danger-red: #f44336;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+}
+
+/* Global Styles */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--light-blue);
+  color: var(--text-primary);
+  /* Tambahkan padding di body agar konten tidak tertutup navbar */
+}
+
+/* Navbar Styles */
+.navbar {
+  background: linear-gradient(45deg, #4e73df, #224abe);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  color: white !important;
+  font-weight: bold;
+}
+
+.nav-link {
+  color: white !important;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.nav-link:hover {
+  opacity: 1;
+}
+
+/* Card Styles */
+.card {
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.habit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header-above {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.habit-actions button,
+.reminder {
+  padding: 10px;
+}
+
+/* Form Styles */
+.form-control {
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+}
+
+.form-control:focus {
+  border: linear-gradient(45deg, #4e73df, #224abe);
+  box-shadow: 0 0 0 0.2rem rgba(107, 193, 219, 0.25);
+}
+
+/* Button Styles */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--text-secondary);
+  border-color: var(--text-secondary);
+}
+
+/* Habit Tracker Styles */
+.habit-calendar {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.habit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.habit-day {
+  aspect-ratio: 1;
+  border: 2px solid var(--light-blue);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+.habit-day.completed {
+  background-color: var(--success-green);
+  color: white;
+  border-color: var(--success-green);
+  transition: all 0.5s ease;
+}
+
+.progress-bar {
+  position: relative;
+}
+
+.progress-bar span {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+.progress-text {
+  padding-left: 5px;
+  padding-bottom: 3px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  body {
+    padding-top: 7%;
+  }
+
+  .container {
+    padding: 0 15px;
+  }
+
+  .habit-grid {
+    grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+  }
+
+  .header-title {
+    display: block;
+  }
+  .text-end {
+    justify-content: left;
+  }
+}

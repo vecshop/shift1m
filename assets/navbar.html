@@ -1,0 +1,104 @@
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+/>
+<style>
+  :root {
+    --primary-blue: #6bc1db;
+    --light-blue: #e6f2f7;
+    --dark-blue: #3a7ca5;
+    --success-green: #4caf50;
+    --warning-orange: #ff9800;
+    --danger-red: #f44336;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+  }
+
+  /* Navbar Styles */
+  .navbar {
+    background: linear-gradient(45deg, #4e73df, #224abe);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .navbar-brand {
+    color: white !important;
+    font-weight: bold;
+  }
+
+  .nav-link {
+    color: white !important;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+  }
+
+  .nav-link:hover {
+    opacity: 1;
+  }
+
+  /* Tambahkan setelah style yang ada */
+  .profile-dropdown {
+    min-width: 200px;
+    border: none;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .profile-dropdown .dropdown-item {
+    border-radius: 7px;
+    padding: 0.7rem 1rem;
+  }
+
+  .profile-dropdown .dropdown-item:hover {
+    background-color: var(--light-blue);
+  }
+
+  .profile-dropdown .dropdown-item.text-danger:hover {
+    background-color: #ffeaea;
+  }
+
+  .nav-profile-img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid white;
+  }
+
+  /* Tambahkan dalam bagian <style> */
+  .nav-profile-img.default-profile {
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    background-color: #ff9800;
+  }
+
+  .nav-profile-img.default-profile .initials {
+    line-height: 1;
+    font-weight: bold;
+  }
+</style>
+
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">SHIFT1M</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto nav-list">
+        <!-- Menu akan dimuat di sini -->
+      </ul>
+    </div>
+  </div>
+</nav>
