@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SHIFT1M - Dashboard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="assets/style.css" rel="stylesheet" />
+    <style>
+      body {
+        padding-top: 50px;
+      }
+      .modal .modal-header {
+        background-color: #6bc1db;
+        color: white;
+      }
+
+      .modal .btn-close {
+        background-color: white;
+      }
+
+      .modal .btn-primary {
+        background-color: #6bc1db;
+        border-color: #6bc1db;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="navbar-placeholder"></div>
+
+    <div class="container mt-5">
+      <div class="row mb-4 header-title">
+        <div class="col-md-8">
+          <h2>My Habits Dashboard</h2>
+        </div>
+        <div class="col-md-4 text-end">
+          <a class="btn btn-primary">Add New Habit</a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card stats-card">
+            <div class="card-body">
+              <h5>Active Habits</h5>
+              <h2 id="activeHabitsCount">0</h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card stats-card">
+            <div class="card-body">
+              <h5>Current Streak</h5>
+              <h2 id="currentStreak">0</h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card stats-card">
+            <div class="card-body">
+              <h5>Completion Rate</h5>
+              <h2 id="completionRate">0%</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="habits-container mt-4">
+        <!-- Habit cards will be dynamically inserted here -->
+      </div>
+      <!-- Modal for Adding New Habit -->
+      <div
+        class="modal fade"
+        id="addHabitModal"
+        tabindex="-1"
+        aria-labelledby="addHabitModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addHabitModalLabel">Add New Habit</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form id="modalHabitForm">
+                <div class="mb-3">
+                  <label for="habitName" class="form-label">Habit Name</label>
+                  <input
+                    type="text"
+                    id="habitName"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="habitDescription" class="form-label"
+                    >Description</label
+                  >
+                  <textarea
+                    id="habitDescription"
+                    class="form-control"
+                    rows="3"
+                  ></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="habitReminder" class="form-label"
+                    >Reminder Time</label
+                  >
+                  <input type="time" id="habitReminder" class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                  Save Habit
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Edit Habit Modal -->
+      <div
+        class="modal fade"
+        id="editHabitModal"
+        tabindex="-1"
+        aria-labelledby="editHabitModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editHabitModalLabel">Edit Habit</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form id="editHabitForm">
+                <div class="mb-3">
+                  <label for="editHabitName" class="form-label"
+                    >Habit Name</label
+                  >
+                  <input
+                    type="text"
+                    id="editHabitName"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="editHabitDescription" class="form-label"
+                    >Description</label
+                  >
+                  <textarea
+                    id="editHabitDescription"
+                    class="form-control"
+                    rows="3"
+                  ></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="editHabitReminder" class="form-label"
+                    >Reminder Time</label
+                  >
+                  <input
+                    type="time"
+                    id="editHabitReminder"
+                    class="form-control"
+                  />
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="button" id="saveEditHabit" class="btn btn-primary">
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+      import { loadNavbar, checkAuth } from "./assets/js/utils.js";
+
+      // Cek autentikasi pengguna
+      checkAuth();
+
+      // Load navbar
+      loadNavbar();
+      import authService from "./assets/js/auth-service.js";
+      import habitService from "./assets/js/habit-service.js";
+      import {
+        showToast,
+        createHabitCard,
+        confirmDialog,
+      } from "./assets/js/ui-utils.js";
+
+      // Authentication check
+      if (!authService.isAuthenticated()) {
+        window.location.href = "login.html";
+      }
+
+      async function updateDashboardStats() {
+        const habits = await habitService.getAllHabits();
+
+        // Update stats
+        document.getElementById("activeHabitsCount").textContent =
+          habits.length;
+
+        let totalStreak = 0;
+        let totalCompletion = 0;
+
+        habits.forEach((habit) => {
+          totalStreak += habitService.getCurrentStreak(habit.id);
+          totalCompletion += habitService.getHabitProgress(habit.id);
+        });
+
+        const avgStreak = habits.length
+          ? Math.round(totalStreak / habits.length)
+          : 0;
+        const avgCompletion = habits.length
+          ? Math.round(totalCompletion / habits.length)
+          : 0;
+
+        document.getElementById("currentStreak").textContent = avgStreak;
+        document.getElementById(
+          "completionRate"
+        ).textContent = `${avgCompletion}%`;
+      }
+
+      async function loadHabits() {
+        const habitsContainer = document.querySelector(".habits-container");
+        habitsContainer.innerHTML = ""; // Clear existing content
+
+        const habits = await habitService.getAllHabits();
+        habits.forEach((habit) => {
+          const habitCard = createHabitCard(habit);
+          habitsContainer.insertAdjacentHTML("beforeend", habitCard);
+        });
+      }
+
+      // Initialize dashboard
+      document.addEventListener("DOMContentLoaded", async () => {
+        await loadHabits();
+        await updateDashboardStats();
+      });
+
+      // Event delegation for habit interactions
+      document
+        .querySelector(".habits-container")
+        .addEventListener("click", async (e) => {
+          const habitCard = e.target.closest(".habit-card");
+          if (!habitCard) return;
+
+          const habitId = parseInt(habitCard.dataset.habitId);
+
+          if (e.target.classList.contains("btn-delete")) {
+            if (
+              await confirmDialog("Are you sure you want to delete this habit?")
+            ) {
+              await habitService.deleteHabit(habitId);
+              await loadHabits();
+              await updateDashboardStats();
+              showToast("Habit deleted successfully", "success");
+            }
+          }
+        });
+    </script>
+    <script type="module" src="assets/js/dashboard.js"></script>
+  </body>
+</html>

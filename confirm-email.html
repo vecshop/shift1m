@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Confirmation</title>
+    <style>
+      body {
+        padding-top: 50px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        text-align: center;
+        font-family: Arial, sans-serif;
+      }
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .message {
+        margin: 20px 0;
+        padding: 15px;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Email Confirmation</h1>
+      <div class="spinner"></div>
+      <div id="message" class="message"></div>
+    </div>
+
+    <script type="module">
+      import authService from "./auth-service.js";
+
+      async function handleConfirmation() {
+        const messageEl = document.getElementById("message");
+
+        try {
+          const result = await authService.handleEmailConfirmation();
+
+          if (result.success) {
+            messageEl.className = "message success";
+            messageEl.textContent = "Email confirmed successfully!";
+            // Redirect to home page after 2 seconds
+            setTimeout(() => {
+              window.location.href = "/home.html";
+            }, 2000);
+          } else {
+            messageEl.className = "message error";
+            messageEl.textContent =
+              result.error || "Confirmation failed. Please try again.";
+          }
+        } catch (error) {
+          messageEl.className = "message error";
+          messageEl.textContent = error.message;
+        }
+      }
+
+      // Run when page loads
+      handleConfirmation();
+    </script>
+  </body>
+</html>

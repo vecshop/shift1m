@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Account - SHIFT1M</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <style>
+      body {
+        padding-top: 50px;
+        padding-bottom: 20px;
+        background-color: #eff4ff;
+      }
+
+      .profile-image .initials {
+        font-size: 3rem;
+        color: #fff;
+        text-transform: uppercase;
+      }
+
+      /* Modifikasi style di my-account.html */
+      #defaultProfile {
+        aspect-ratio: 1/1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #imageLoadingProgress {
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1;
+        border-radius: 50%;
+      }
+
+      .profile-image {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        margin: 0 auto;
+      }
+
+      .profile-image .dropdown-menu {
+        z-index: 1050; /* Pastikan dropdown muncul di atas card */
+      }
+
+      .profile-image .profile-dropdown {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        z-index: 1050;
+        margin-top: 5px;
+      }
+
+      .profile-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: 3px solid #e9ecef;
+        padding: 3px;
+      }
+
+      /* Pastikan tombol dropdown juga memiliki z-index yang tepat */
+      .profile-image .dropdown > button {
+        z-index: 1049;
+        position: relative;
+      }
+
+      /* Card mungkin perlu z-index yang lebih rendah */
+      .card-body {
+        position: relative;
+        z-index: 1;
+      }
+
+      .dark-mode .mb-3 label,
+      .dark-mode .mb-4,
+      .dark-mode h4 {
+        color: white;
+      }
+
+      .card {
+        border: none;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+        border-radius: 15px;
+        transition: transform 0.2s;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .stats-card {
+        background: linear-gradient(45deg, #4e73df, #224abe);
+        color: white;
+      }
+
+      .stats-card .stat-item {
+        padding: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .stats-card .stat-item:last-child {
+        border-bottom: none;
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #4e73df, #224abe);
+        border: none;
+        padding: 10px 25px;
+      }
+
+      .btn-danger {
+        background: linear-gradient(45deg, #e74a3b, #be2617);
+        border: none;
+      }
+
+      .form-control {
+        border-radius: 10px;
+        padding: 12px;
+        border: 1px solid #e9ecef;
+      }
+
+      .form-control:focus {
+        box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.25);
+      }
+
+      .password-field {
+        position: relative;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: none;
+        color: #6c757d;
+        cursor: pointer;
+      }
+
+      .preference-switch {
+        background: #e9ecef;
+        border-radius: 20px;
+        padding: 15px;
+        margin-bottom: 10px;
+        transition: background-color 0.3s;
+      }
+
+      .preference-switch:hover {
+        background: #dee2e6;
+      }
+
+      .loading-skeleton {
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+      }
+
+      @keyframes loading {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      /* Dark mode styles */
+      .dark-mode {
+        background-color: #1a1c23;
+        color: #e9ecef;
+      }
+
+      .dark-mode .card {
+        background-color: #2a2d35;
+        border-color: #2a2d35;
+      }
+
+      .dark-mode .form-control {
+        background-color: #2a2d35;
+        border-color: #3a3d45;
+        color: #e9ecef;
+      }
+
+      .dark-mode .text-muted {
+        color: #a8aeb8 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="navbar-placeholder"></div>
+
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <div class="profile-image mb-3">
+                <div id="profileImageContainer" class="position-relative">
+                  <div
+                    id="imageLoadingProgress"
+                    class="position-absolute w-100 h-100 d-none"
+                  >
+                    <div
+                      class="progress position-absolute bottom-0 w-100"
+                      style="height: 4px"
+                    >
+                      <div
+                        class="progress-bar"
+                        role="progressbar"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <img
+                    src="https://via.placeholder.com/150"
+                    id="profileImage"
+                    class="rounded-circle"
+                    alt="Profile Picture"
+                  />
+
+                  <!-- Default profile dengan inisial -->
+                  <div
+                    id="defaultProfile"
+                    class="rounded-circle d-none"
+                    style="width: 100%; height: 100%"
+                  >
+                    <span class="initials"></span>
+                  </div>
+
+                  <div class="dropdown">
+                    <button
+                      class="btn btn-sm btn-light position-absolute bottom-0 end-0 rounded-circle"
+                      style="width: 32px; height: 32px"
+                      data-bs-toggle="dropdown"
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <div class="dropdown-menu profile-dropdown">
+                      <a class="dropdown-item" href="#" id="updateImageBtn">
+                        <i class="bi bi-upload"></i>
+                        <span id="updateImageText">Add Image</span>
+                      </a>
+                      <a
+                        class="dropdown-item text-danger"
+                        href="#"
+                        id="deleteImageBtn"
+                      >
+                        <i class="bi bi-trash"></i> Delete Image
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <input
+                  type="file"
+                  id="avatarInput"
+                  accept="image/*"
+                  style="display: none"
+                />
+              </div>
+              <h4 id="userDisplayName" class="loading-skeleton">Loading...</h4>
+              <p id="userEmail" class="text-muted loading-skeleton">
+                Loading...
+              </p>
+              <div class="mt-3">
+                <button id="logoutBtn" class="btn btn-danger">
+                  <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-4 stats-card">
+            <div class="card-body">
+              <h5 class="mb-4">Statistics</h5>
+              <div class="stat-item d-flex justify-content-between">
+                <span><i class="bi bi-check2-circle"></i> Total Habits</span>
+                <span id="totalHabits" class="fw-bold">0</span>
+              </div>
+              <div class="stat-item d-flex justify-content-between">
+                <span><i class="bi bi-calendar-check"></i> Days Active</span>
+                <span id="daysActive" class="fw-bold">0</span>
+              </div>
+              <div class="stat-item d-flex justify-content-between">
+                <span><i class="bi bi-graph-up"></i> Success Rate</span>
+                <span id="successRate" class="fw-bold">0%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="mb-4">
+                <i class="bi bi-person-gear"></i> Edit Profile
+              </h4>
+              <form id="profileForm">
+                <div class="mb-3">
+                  <label>Full Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label>Current Password</label>
+                  <div class="password-field">
+                    <input
+                      type="password"
+                      id="currentPassword"
+                      name="currentPassword"
+                      class="form-control"
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      onclick="togglePassword('currentPassword')"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label>New Password (leave blank to keep current)</label>
+                  <div class="password-field">
+                    <input
+                      type="password"
+                      id="newPassword"
+                      name="password"
+                      class="form-control"
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      onclick="togglePassword('newPassword')"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label>Confirm New Password</label>
+                  <div class="password-field">
+                    <input
+                      type="password"
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      class="form-control"
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      onclick="togglePassword('confirmPassword')"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </button>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-save"></i> Update Profile
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <div class="card-body">
+              <h4 class="mb-4"><i class="bi bi-sliders"></i> Preferences</h4>
+              <div class="preference-switch">
+                <label
+                  class="d-flex justify-content-between align-items-center"
+                >
+                  <span>
+                    <i class="bi bi-envelope"></i>
+                    Enable Email Notifications
+                  </span>
+                  <input
+                    type="checkbox"
+                    id="emailNotifications"
+                    class="form-check-input"
+                  />
+                </label>
+              </div>
+              <div class="preference-switch">
+                <label
+                  class="d-flex justify-content-between align-items-center"
+                >
+                  <span>
+                    <i class="bi bi-moon"></i>
+                    Dark Mode
+                  </span>
+                  <input
+                    type="checkbox"
+                    id="darkMode"
+                    class="form-check-input"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const icon = input.nextElementSibling.querySelector("i");
+
+        if (input.type === "password") {
+          input.type = "text";
+          icon.classList.remove("bi-eye");
+          icon.classList.add("bi-eye-slash");
+        } else {
+          input.type = "password";
+          icon.classList.remove("bi-eye-slash");
+          icon.classList.add("bi-eye");
+        }
+      }
+    </script>
+    <script type="module">
+      import { loadNavbar, checkAuth } from "./assets/js/utils.js";
+      import authService from "./assets/js/auth-service.js";
+      import habitService from "./assets/js/habit-service.js";
+      import { showToast } from "./assets/js/ui-utils.js";
+
+      // Check authentication and load navbar
+      checkAuth();
+      loadNavbar();
+
+      if (!authService.isAuthenticated()) {
+        window.location.href = "login.html";
+      }
+
+      // Load user data
+      const currentUser = authService.getCurrentUser();
+      if (currentUser) {
+        const displayName =
+          currentUser.user_metadata?.full_name ||
+          currentUser.email.split("@")[0];
+        document.getElementById("userDisplayName").textContent = displayName;
+        document.getElementById("userEmail").textContent = currentUser.email;
+
+        const profileForm = document.getElementById("profileForm");
+        profileForm.name.value = currentUser.user_metadata?.full_name || "";
+        profileForm.email.value = currentUser.email;
+
+        // Remove loading skeleton class
+        document
+          .getElementById("userDisplayName")
+          .classList.remove("loading-skeleton");
+        document
+          .getElementById("userEmail")
+          .classList.remove("loading-skeleton");
+      }
+
+      // Update statistics
+      async function updateStats() {
+        try {
+          const habits = await habitService.getAllHabits();
+          document.getElementById("totalHabits").textContent = habits.length;
+
+          let totalCompletions = 0;
+          habits.forEach((habit) => {
+            totalCompletions += habit.progress.filter((day) => day).length;
+          });
+
+          const daysActive = currentUser.created_at
+            ? Math.floor(
+                (new Date() - new Date(currentUser.created_at)) /
+                  (1000 * 60 * 60 * 24)
+              )
+            : 0;
+          document.getElementById("daysActive").textContent = daysActive;
+
+          const successRate = habits.length
+            ? Math.round((totalCompletions / (habits.length * 30)) * 100)
+            : 0;
+          document.getElementById(
+            "successRate"
+          ).textContent = `${successRate}%`;
+        } catch (error) {
+          console.error("Error updating stats:", error);
+        }
+      }
+
+      updateStats();
+
+      // Handle form submission
+      document
+        .getElementById("profileForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = new FormData(e.target);
+          const updates = {
+            name: formData.get("name"),
+            email: formData.get("email"),
+          };
+
+          const newPassword = formData.get("password");
+          const confirmPassword = formData.get("confirmPassword");
+
+          if (newPassword) {
+            if (newPassword !== confirmPassword) {
+              showToast("Passwords do not match", "error");
+              return;
+            }
+            updates.password = newPassword;
+          }
+
+          try {
+            await authService.updateProfile(updates);
+            showToast("Profile updated successfully!", "success");
+            setTimeout(() => window.location.reload(), 1000);
+          } catch (error) {
+            showToast(error.message || "Failed to update profile", "error");
+          }
+        });
+
+      // Handle logout
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        authService.logout();
+      });
+
+      // Handle preferences
+      const emailNotifications = document.getElementById("emailNotifications");
+      const darkMode = document.getElementById("darkMode");
+
+      // Load preferences
+      emailNotifications.checked =
+        localStorage.getItem("emailNotifications") === "true";
+      darkMode.checked = localStorage.getItem("darkMode") === "true";
+
+      // Apply dark mode if enabled
+      if (darkMode.checked) {
+        document.body.classList.add("dark-mode");
+      }
+
+      emailNotifications.addEventListener("change", (e) => {
+        localStorage.setItem("emailNotifications", e.target.checked);
+        showToast("Preferences saved", "success");
+      });
+
+      darkMode.addEventListener("change", (e) => {
+        localStorage.setItem("darkMode", e.target.checked);
+        if (e.target.checked) {
+          document.body.classList.add("dark-mode");
+        } else {
+          document.body.classList.remove("dark-mode");
+        }
+        showToast("Theme updated", "success");
+      });
+
+      // Tambahkan dalam script type="module" yang ada
+      const avatarInput = document.getElementById("avatarInput");
+      // Di dalam script type="module" di my-account.html
+      const profileImage = document.getElementById("profileImage");
+      const defaultProfile = document.getElementById("defaultProfile");
+      const imageLoadingProgress = document.getElementById(
+        "imageLoadingProgress"
+      );
+      const progressBar = imageLoadingProgress.querySelector(".progress-bar");
+      const updateImageBtn = document.getElementById("updateImageBtn");
+      const deleteImageBtn = document.getElementById("deleteImageBtn");
+      const updateImageText = document.getElementById("updateImageText");
+
+      // Fungsi untuk generate warna background random yang kontras
+      function getRandomColor() {
+        const colors = [
+          "#4e73df",
+          "#1cc88a",
+          "#36b9cc",
+          "#f6c23e",
+          "#e74a3b",
+          "#5a5c69",
+          "#2c9faf",
+          "#3498db",
+          "#e67e22",
+          "#2ecc71",
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+      }
+
+      // Fungsi untuk set default profile dengan inisial
+      function setDefaultProfile(name) {
+        const initials = name
+          .split(" ")
+          .map((word) => word[0])
+          .join("")
+          .slice(0, 2);
+
+        const bgColor = "#ff9800";
+        defaultProfile.style.backgroundColor = bgColor;
+        defaultProfile.querySelector(".initials").textContent = initials;
+
+        profileImage.classList.add("d-none");
+        defaultProfile.classList.remove("d-none");
+        updateImageText.textContent = "Add Image";
+      }
+
+      // Update initial load
+      if (currentUser?.user_metadata?.avatar_url) {
+        profileImage.src = currentUser.user_metadata.avatar_url;
+        profileImage.classList.remove("d-none");
+        defaultProfile.classList.add("d-none");
+        updateImageText.textContent = "Update Image";
+      } else {
+        setDefaultProfile(
+          currentUser.user_metadata?.full_name || currentUser.email
+        );
+      }
+
+      // Handle file upload dengan progress
+      // Modifikasi event listener untuk upload image
+      avatarInput.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+          showToast("Please upload an image file", "error");
+          return;
+        }
+
+        try {
+          imageLoadingProgress.classList.remove("d-none");
+
+          let imageFile = file;
+          if (file.size > 2 * 1024 * 1024) {
+            imageFile = await authService.resizeImage(file);
+          }
+
+          const url = await authService.uploadAvatar(imageFile, (progress) => {
+            progressBar.style.width = `${progress}%`;
+          });
+
+          updateAllProfileImages(url); // Panggil fungsi update
+          showToast("Profile picture updated successfully!", "success");
+        } catch (error) {
+          showToast(
+            error.message || "Failed to update profile picture",
+            "error"
+          );
+        } finally {
+          imageLoadingProgress.classList.add("d-none");
+          progressBar.style.width = "0%";
+        }
+      });
+
+      // Handle delete image
+      // Modifikasi event listener untuk delete image
+      deleteImageBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        if (!currentUser?.user_metadata?.avatar_url) return;
+
+        try {
+          await authService.deleteAvatar();
+          updateAllProfileImages(null); // Panggil fungsi update dengan null
+          showToast("Profile picture removed", "success");
+        } catch (error) {
+          showToast(
+            error.message || "Failed to delete profile picture",
+            "error"
+          );
+        }
+      });
+
+      // Handle update/add image button
+      updateImageBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        avatarInput.click();
+      });
+
+      // Tambahkan fungsi updateAllProfileImages
+      function updateAllProfileImages(imageUrl) {
+        // Update my-account image
+        if (imageUrl) {
+          profileImage.src = imageUrl;
+          profileImage.classList.remove("d-none");
+          defaultProfile.classList.add("d-none");
+          updateImageText.textContent = "Update Image";
+        } else {
+          setDefaultProfile(
+            currentUser.user_metadata?.full_name || currentUser.email
+          );
+          updateImageText.textContent = "Add Image";
+        }
+
+        // Update navbar image
+        const navProfileImg = document.querySelector(".nav-profile-img");
+        if (navProfileImg) {
+          if (imageUrl) {
+            // Jika ada image baru
+            const newImg = document.createElement("img");
+            newImg.src = imageUrl;
+            newImg.className = "nav-profile-img";
+            newImg.setAttribute("data-bs-toggle", "dropdown");
+            newImg.alt = "Profile";
+            navProfileImg.replaceWith(newImg);
+          } else {
+            // Jika tidak ada image (gunakan default profile)
+            const initials = (
+              currentUser.user_metadata?.full_name || currentUser.email
+            )
+              .split(" ")
+              .map((word) => word[0])
+              .join("")
+              .slice(0, 2);
+
+            const defaultDiv = document.createElement("div");
+            defaultDiv.className = "nav-profile-img default-profile";
+            defaultDiv.setAttribute("data-bs-toggle", "dropdown");
+            defaultDiv.innerHTML = `<span class="initials">${initials}</span>`;
+            navProfileImg.replaceWith(defaultDiv);
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
